@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Assignment
 {
     public interface IAssignment
@@ -39,7 +42,26 @@ namespace Assignment
         /// คำอธิบาย : ค่าที่ 5 ปรากฏครั้งแรกใน index ที่ 0 และตำแหน่งสุดท้ายคือ index ที่ 4
         /// </summary>
         /// <param name="array"></param>
-        int[] AS01_FindFirstAndLastElementOfArray(int[] array, int target);
+        int[] AS01_FindFirstAndLastElementOfArray(int[] array, int target)
+        {
+            int first = -1;
+            int last = -1;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == target)
+                {
+                    if (first == -1)
+                    {
+                        first = i;
+                    }
+
+                    last = i;
+                }
+            }
+
+            return new int[] { first, last };
+        }
 
         /// <summary>
         /// หาค่าที่มากที่สุดที่น้อยกว่าค่าที่กำหนด
@@ -71,7 +93,23 @@ namespace Assignment
         /// </summary>
         /// <param name="array"></param>
         /// <param name="target"></param>
-        int AS02_FindMaxLessThan(int[] array, int target);
+        int AS02_FindMaxLessThan(int[] array, int target)
+        {
+            int max = -1;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] < target)
+                {
+                    if (max == -1 || array[i] > max)
+                    {
+                        max = array[i];
+                    }
+                }
+            }
+
+            return max;
+        }
 
         /// <summary>
         /// หาค่าที่อยู่ในช่วงที่กำหนด
@@ -106,7 +144,20 @@ namespace Assignment
         /// <param name="array">Array ที่เรียงลำดับมาแล้ว</param>
         /// <param name="min">ค่าต่ำสุด</param>
         /// <param name="max">ค่าสูงสุด</param>
-        int[] AS03_FindRange(int[] array, int min, int max);
+        int[] AS03_FindRange(int[] array, int min, int max)
+        {
+            List<int> result = new List<int>();
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] >= min && array[i] <= max)
+                {
+                    result.Add(array[i]);
+                }
+            }
+
+            return result.ToArray();
+        }
 
         #endregion
 
@@ -144,7 +195,57 @@ namespace Assignment
         /// </summary>
         /// <param name="enemyHPs"></param>
         /// <param name="mana"></param>
-        int[] EX01_FindTargetEnemies(int[] enemyHPs, int mana);
+        int[] EX01_FindTargetEnemies(int[] enemyHPs, int mana)
+        {
+            int[] sortedHPs = (int[])enemyHPs.Clone();
+            Array.Sort(sortedHPs);
+
+            int totalMana = 0;
+            int count = 0;
+
+            for (int i = 0; i < sortedHPs.Length; i++)
+            {
+                if (totalMana + sortedHPs[i] <= mana)
+                {
+                    totalMana += sortedHPs[i];
+                    count++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            Dictionary<int, int> selectedHPs = new Dictionary<int, int>();
+
+            for (int i = 0; i < count; i++)
+            {
+                if (selectedHPs.ContainsKey(sortedHPs[i]))
+                {
+                    selectedHPs[sortedHPs[i]]++;
+                }
+                else
+                {
+                    selectedHPs[sortedHPs[i]] = 1;
+                }
+            }
+
+            List<int> result = new List<int>();
+
+            for (int i = 0; i < enemyHPs.Length; i++)
+            {
+                int hp = enemyHPs[i];
+
+                if (selectedHPs.ContainsKey(hp)
+                    && selectedHPs[hp] > 0)
+                {
+                    result.Add(hp);
+                    selectedHPs[hp]--;
+                }
+            }
+
+            return result.ToArray();
+        }
 
         #endregion
 
